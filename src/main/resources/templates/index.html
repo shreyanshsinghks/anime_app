@@ -28,15 +28,7 @@
         </a>
 
         <div class="navbar-nav ms-auto">
-            <div sec:authorize="!isAuthenticated()">
-                <a class="nav-link" th:href="@{/login}">
-                    <i class="fas fa-sign-in-alt"></i> Login
-                </a>
-                <a class="nav-link" th:href="@{/register}">
-                    <i class="fas fa-user-plus"></i> Register
-                </a>
-            </div>
-
+            <!-- Only show an authenticated user menu since home requires login -->
             <div sec:authorize="isAuthenticated()">
                     <span class="navbar-text me-3">
                         Welcome, <span sec:authentication="name"></span>!
@@ -59,18 +51,12 @@
 
 <!-- Main Content -->
 <div class="container mt-4">
-    <!-- Logout Success Message -->
-    <div th:if="${param.logout}" class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="fas fa-check-circle"></i> You have been logged out successfully.
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-
     <div class="row">
         <div class="col-12">
             <h1 class="mb-4">
                 <i class="fas fa-star text-warning"></i> Top Anime
             </h1>
-            <p class="lead">Discover the highest-rated anime series of all time.</p>
+            <p class="lead">Welcome to your personal anime dashboard!</p>
         </div>
     </div>
 

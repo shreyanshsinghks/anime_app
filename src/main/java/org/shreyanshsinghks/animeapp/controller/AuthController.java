@@ -1,10 +1,11 @@
 package org.shreyanshsinghks.animeapp.controller;
 
 
-import org.shreyanshsinghks.animeapp.model.User;
-import org.shreyanshsinghks.animeapp.service.UserService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.shreyanshsinghks.animeapp.model.User;
+import org.shreyanshsinghks.animeapp.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -25,9 +26,17 @@ public class AuthController {
 
     @GetMapping("/login")
     public String loginPage(@RequestParam(value = "error", required = false) String error,
+                            @RequestParam(value = "logout", required = false) String logout,
+                            @RequestParam(value = "required", required = false) String required,
                             Model model) {
         if (error != null) {
             model.addAttribute("error", "Invalid username or password");
+        }
+        if (logout != null) {
+            model.addAttribute("message", "You have been logged out successfully.");
+        }
+        if (required != null) {
+            model.addAttribute("message", "Please log in to access the application.");
         }
         return "login";
     }
@@ -80,6 +89,6 @@ public class AuthController {
             new SecurityContextLogoutHandler().logout(request, response, auth);
             log.info("User logged out: {}", auth.getName());
         }
-        return "redirect:/?logout=true";
+        return "redirect:/login?logout=true";
     }
 }

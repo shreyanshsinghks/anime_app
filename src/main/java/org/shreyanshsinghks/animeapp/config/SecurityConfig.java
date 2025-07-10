@@ -26,17 +26,18 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/search", "/anime/**", "/api/anime/**").permitAll()
+                        // Remove "/" from permitAll - now requires authentication
+                        .requestMatchers("/search", "/anime/**", "/api/anime/**").permitAll()
                         .requestMatchers("/register", "/login", "/error").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/logout").permitAll() // Allow GET logout
-                        .anyRequest().authenticated()
+                        .requestMatchers(HttpMethod.GET, "/logout").permitAll()
+                        .anyRequest().authenticated() // All other requests require authentication
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/", true)
+                        .defaultSuccessUrl("/", true) // Redirect to home after successful login
                         .failureUrl("/login?error=true")
                         .usernameParameter("username")
                         .passwordParameter("password")
@@ -44,10 +45,16 @@ public class SecurityConfig {
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/?logout=true")
+                        .logoutSuccessUrl("/login?logout=true") // Redirect to login after logout
                         .deleteCookies("JSESSIONID")
                         .invalidateHttpSession(true)
                         .permitAll()
+                )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            // Redirect unauthenticated users to login page
+                            response.sendRedirect("/login?required=true");
+                        })
                 )
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/h2-console/**", "/api/**")
