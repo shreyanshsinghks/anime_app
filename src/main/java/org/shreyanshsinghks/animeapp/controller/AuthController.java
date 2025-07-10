@@ -1,15 +1,20 @@
 package org.shreyanshsinghks.animeapp.controller;
 
 
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.shreyanshsinghks.animeapp.model.User;
 import org.shreyanshsinghks.animeapp.service.UserService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 @RequiredArgsConstructor
@@ -54,7 +59,6 @@ public class AuthController {
                 return "register";
             }
 
-            // Register the user
             userService.registerUser(user);
 
             redirectAttributes.addFlashAttribute("message", "Registration successful! Please login with your new account.");
@@ -66,5 +70,16 @@ public class AuthController {
             model.addAttribute("user", user);
             return "register";
         }
+    }
+
+    // Handle GET logout
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+            log.info("User logged out: {}", auth.getName());
+        }
+        return "redirect:/?logout=true";
     }
 }

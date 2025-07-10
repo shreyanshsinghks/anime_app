@@ -9,6 +9,7 @@
 </head>
 <body>
 <!-- Navigation -->
+<!-- Navigation for all templates -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
         <a class="navbar-brand" href="/">
@@ -20,9 +21,10 @@
                 <a class="nav-link" th:href="@{/login}">Login</a>
                 <a class="nav-link" th:href="@{/register}">Register</a>
             </div>
+
             <div sec:authorize="isAuthenticated()">
                 <span class="navbar-text me-3">Welcome, <span sec:authentication="name"></span>!</span>
-                <a class="nav-link" th:href="@{/templates/user}">My Profile</a>
+                <a class="nav-link" th:href="@{/profile}">My Profile</a>
                 <a class="nav-link" th:href="@{/logout}">Logout</a>
             </div>
         </div>
@@ -49,10 +51,13 @@
                 <h3 class="text-muted" th:if="${anime.titleEnglish}" th:text="${anime.titleEnglish}">English Title</h3>
 
                 <div class="mb-3">
-                    <span class="badge bg-warning me-2" th:if="${anime.score}" th:text="'★ ' + ${anime.score}">Rating</span>
-                    <span class="badge bg-info me-2" th:if="${anime.episodes}" th:text="${anime.episodes} + ' episodes'">Episodes</span>
+                    <span class="badge bg-warning me-2" th:if="${anime.score}"
+                          th:text="'★ ' + ${anime.score}">Rating</span>
+                    <span class="badge bg-info me-2" th:if="${anime.episodes}"
+                          th:text="${anime.episodes} + ' episodes'">Episodes</span>
                     <span class="badge bg-success me-2" th:if="${anime.status}" th:text="${anime.status}">Status</span>
-                    <span class="badge bg-secondary me-2" th:if="${anime.rating}" th:text="${anime.rating}">Rating</span>
+                    <span class="badge bg-secondary me-2" th:if="${anime.rating}"
+                          th:text="${anime.rating}">Rating</span>
                 </div>
 
                 <div class="mb-3" th:if="${anime.genres}">
